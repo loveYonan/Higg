@@ -19,8 +19,8 @@ import {
   UserStatus,
 } from "../types";
 import { UserRole } from "@/features/profile/types";
-import { dailyIncreasePercentage } from "../constants";
-import { calculateCompoundInterest, calculateReturnDay } from "../utils";
+
+import { calculateInterestOnly, calculateReturnDay } from "../utils";
 import { calculateTotalInterest } from "@/lib/utils";
 
 const app = new Hono()
@@ -349,10 +349,9 @@ const app = new Hono()
             return c.json({ error: "No investment days" }, 401);
           }
 
-          const compoundInterest = calculateCompoundInterest(
+          const compoundInterest = calculateInterestOnly(
             investment.amountInvested,
-            investmentDays,
-            dailyIncreasePercentage
+            new Date(investment.investmentDate)
           );
 
           if (compoundInterest < transaction.amount) {
